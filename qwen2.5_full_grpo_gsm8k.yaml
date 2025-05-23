@@ -1,0 +1,55 @@
+### model
+#model_name_or_path: /mnt/nj-public02/dataset/redaccel/models/Qwen2.5-1.5B-Instruct
+model_name_or_path: /mnt/ali-sh-1/usr/zanghai1/workplace/huggingface/Qwen2.5-1.5B-Instruct
+
+### method
+stage: grpo
+grpo_beta: 0.001
+grpo_num_generations: 5
+grpo_num_iterations: 4
+use_vllm: true
+grpo_vllm_async: true
+vllm_gpu_util: 0.7
+vllm_enforce_eager: true
+
+prompt_suffix: " Let's think step by step and output the final answer after \"####\"."
+system_prompt: "You are a helpful assistant."
+
+do_train: true
+finetuning_type: full
+
+### dataset
+dataset: gsm8k
+template: qwen
+cutoff_len: 2048
+overwrite_cache: true
+preprocessing_num_workers: 16
+
+### output
+output_dir: saves/qwen2.5_7b_gsm8k/full/grpo
+save_steps: 500
+# logging_steps: 1
+# overwrite_output_dir: true
+
+### train
+per_device_train_batch_size: 128
+gradient_accumulation_steps: 3
+learning_rate: 3.0e-06
+num_train_epochs: 15.0
+lr_scheduler_type: cosine
+seed: 42
+warmup_ratio: 0.1
+bf16: true
+ddp_timeout: 180000000
+
+### generate
+max_new_tokens: 1024
+top_k: -1
+top_p: 1.0
+temperature: 1.0
+
+### eval
+
+eval_dataset: gsm8k_test
+per_device_eval_batch_size: 64
+eval_steps: 4

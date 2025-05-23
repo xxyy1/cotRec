@@ -1,0 +1,69 @@
+### model
+#model_name_or_path: /mnt/nj-public02/dataset/redaccel/models/Qwen2.5-1.5B-Instruct
+#model_name_or_path: /mnt/ali-sh-1/usr/zanghai1/workplace/huggingface/Qwen2.5-1.5B-Instruct
+#model_name_or_path: /mnt/ali-sh-1/usr/zanghai1/workplace/llm_rec/redaccelexamples/saves/dsr1-1.5b/lora/sft_mf
+#model_name_or_path: /mnt/ali-sh-1/usr/zanghai1/workplace/llm_rec/redaccelexamples/saves/dsr1-1.5b/lora/sft_mf_merge
+model_name_or_path: /mnt/ali-sh-1/usr/zanghai1/workplace/llm_rec/redaccelexamples/saves/dsr1-1.5b/lora/sft_v4_merge
+
+### method
+stage: grpo
+grpo_beta: 0.001
+grpo_num_generations: 8
+grpo_num_iterations: 4
+use_vllm: true
+grpo_vllm_async: true
+vllm_gpu_util: 0.7
+vllm_enforce_eager: true
+reward_funcs:
+  - rec_reward
+  - rec_fomat_reward
+  - format
+
+#custom_reward_function:
+#  path: /mnt/ali-sh-1/usr/zanghai1/workplace/red_verl/redaccelexamples/plugins/grpo
+#  name: compute_score
+
+#prompt_suffix: " Let's think step by step and output the final answer after \"####\"."
+#system_prompt: "You are a helpful assistant."
+system_prompt: "作为一个推荐系统,请结合用户的信息,必须在指定的候选集里面,挑选出用户最感兴趣的笔记id, 按照兴趣程度排序,第一个是最感兴趣的笔记id, 给出详细的思考过程放在<think></think>中间, 用户最感兴趣的笔记id放在 <answer> </answer> 中间, 例如:<think>推荐理由:...</think>  <answer> 用户id:5b28a8dc4eacab4b2431f35d, 最感兴趣的笔记id是[67ba1a860000000006028c1f, ...] </answer>"
+
+do_train: true
+finetuning_type: lora
+
+### dataset
+dataset: rec_data_v6
+#template: qwen
+template: deepseek
+cutoff_len: 4096
+overwrite_cache: true
+preprocessing_num_workers: 16
+
+### output
+output_dir: saves/deepseek_zh/ngrpo0331-2
+save_steps: 500
+logging_steps: 1
+# overwrite_output_dir: true
+
+### train
+per_device_train_batch_size: 8
+gradient_accumulation_steps: 3
+learning_rate: 3.0e-04
+num_train_epochs: 1.0
+lr_scheduler_type: cosine
+seed: 42
+warmup_ratio: 0.1
+bf16: true
+ddp_timeout: 180000000
+
+### generate
+max_new_tokens: 1024
+top_k: -1
+top_p: 1.0
+temperature: 1.0
+
+### eval
+
+#eval_dataset: gsm8k_test
+eval_dataset: rec_data_v6_test
+per_device_eval_batch_size: 8
+eval_steps: 20

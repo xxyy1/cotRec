@@ -1,0 +1,31 @@
+### model
+model_name_or_path: /mnt/ali-sh-1/usr/zanghai1/workplace/red_verl/redaccelexamples/saves/deepseek_zh/ngrpo0331-2-merger
+
+### method
+stage: sft
+do_predict: true
+finetuning_type: lora   
+
+#bf16: true
+#flash_attn: fa2
+#enable_liger_kernel: true
+###deepspeed: tuner/deepspeed/ds_z3_config.json   ##是否一个显卡可以放下模型
+
+### dataset
+eval_dataset: rec_data_v6_test
+template: deepseek3
+cutoff_len: 4096
+max_samples: 1024
+overwrite_cache: true
+preprocessing_num_workers: 16
+
+
+### output
+output_dir: saves/predict/grpo0331-2
+overwrite_output_dir: true
+
+### eval
+per_device_eval_batch_size: 2
+predict_with_generate: true
+
+
